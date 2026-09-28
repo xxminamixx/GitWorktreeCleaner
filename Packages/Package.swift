@@ -14,7 +14,13 @@ let package = Package(
         .library(name: "WorktreeFeature", targets: ["WorktreeFeature"])
     ],
     dependencies: [
-        .package(url: "https://github.com/pointfreeco/swift-dependencies", from: "1.0.0")
+        .package(url: "https://github.com/pointfreeco/swift-dependencies", from: "1.0.0"),
+        // Referenced directly by @DependencyClient's macro-expanded code
+        // (IssueReporting.reportIssue for unimplemented endpoints). Only a
+        // transitive dependency of swift-dependencies otherwise, but Xcode's
+        // per-product "dynamic" framework build (used to host unit tests)
+        // needs it declared explicitly to link the symbols it embeds.
+        .package(url: "https://github.com/pointfreeco/swift-issue-reporting", from: "2.1.0")
     ],
     targets: [
         .target(name: "Models"),
@@ -28,7 +34,8 @@ let package = Package(
                 "Models",
                 "Localization",
                 .product(name: "Dependencies", package: "swift-dependencies"),
-                .product(name: "DependenciesMacros", package: "swift-dependencies")
+                .product(name: "DependenciesMacros", package: "swift-dependencies"),
+                .product(name: "IssueReporting", package: "swift-issue-reporting")
             ]
         ),
 
@@ -50,7 +57,8 @@ let package = Package(
             name: "UserDefaultsClient",
             dependencies: [
                 .product(name: "Dependencies", package: "swift-dependencies"),
-                .product(name: "DependenciesMacros", package: "swift-dependencies")
+                .product(name: "DependenciesMacros", package: "swift-dependencies"),
+                .product(name: "IssueReporting", package: "swift-issue-reporting")
             ]
         ),
 
@@ -82,6 +90,16 @@ let package = Package(
         .testTarget(
             name: "GitWorktreeServiceLiveTests",
             dependencies: ["GitWorktreeServiceLive", "Models"]
+        ),
+        .testTarget(
+            name: "WorktreeFeatureTests",
+            dependencies: [
+                "WorktreeFeature",
+                "Models",
+                "GitWorktreeServiceClient",
+                "UserDefaultsClient",
+                .product(name: "Dependencies", package: "swift-dependencies")
+            ]
         )
     ]
 )
