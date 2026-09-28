@@ -19,7 +19,7 @@ them in bulk with `git worktree remove --force`.
 
 ## Requirements
 
-- macOS 27.0 or later (see `MACOSX_DEPLOYMENT_TARGET` in the Xcode project)
+- macOS 26.0 or later (see `MACOSX_DEPLOYMENT_TARGET` in the Xcode project)
 - Xcode 27 to build
 - `git` available on your normal shell `PATH` (the app resolves it through a
   login shell, the same way a Terminal session would)
