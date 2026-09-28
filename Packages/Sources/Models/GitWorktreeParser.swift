@@ -5,9 +5,9 @@
 
 import Foundation
 
-enum GitWorktreeParser {
+public enum GitWorktreeParser {
     /// Parses the output of `git worktree list --porcelain`.
-    static func parse(_ output: String) -> [Worktree] {
+    public static func parse(_ output: String) -> [Worktree] {
         var result: [Worktree] = []
 
         var path: String?

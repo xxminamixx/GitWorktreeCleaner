@@ -4,6 +4,8 @@
 //
 
 import Foundation
+import Localization
+import Models
 import SwiftUI
 
 struct WorktreeRow: View {

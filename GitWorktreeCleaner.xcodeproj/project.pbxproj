@@ -6,6 +6,11 @@
 	objectVersion = 110;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		92DA194A3D04671599A4B717 /* WorktreeFeature in Frameworks */ = {isa = PBXBuildFile; productRef = 391203B42CA9AF3075C2026C /* WorktreeFeature */; };
+		AA3A3C190C04B52FA7DA6617 /* WorktreeFeature in Frameworks */ = {isa = PBXBuildFile; productRef = B84E2D7399F931313CAFD884 /* WorktreeFeature */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXContainerItemProxy section */
 		E9879FD8306A0FC500F6B491 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
@@ -51,11 +56,13 @@
 		E9879FC7306A0FC500F6B491 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			files = (
+				92DA194A3D04671599A4B717 /* WorktreeFeature in Frameworks */,
 			);
 		};
 		E9879FD4306A0FC500F6B491 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			files = (
+				AA3A3C190C04B52FA7DA6617 /* WorktreeFeature in Frameworks */,
 			);
 		};
 		E9879FDE306A0FC500F6B491 /* Frameworks */ = {
@@ -103,6 +110,9 @@
 				E9879FCC306A0FC500F6B491 /* GitWorktreeCleaner */,
 			);
 			name = GitWorktreeCleaner;
+			packageProductDependencies = (
+				391203B42CA9AF3075C2026C /* WorktreeFeature */,
+			);
 			productName = GitWorktreeCleaner;
 			productReference = E9879FCA306A0FC500F6B491 /* GitWorktreeCleaner.app */;
 			productType = "com.apple.product-type.application";
@@ -124,6 +134,9 @@
 				E9879FDA306A0FC500F6B491 /* GitWorktreeCleanerTests */,
 			);
 			name = GitWorktreeCleanerTests;
+			packageProductDependencies = (
+				B84E2D7399F931313CAFD884 /* WorktreeFeature */,
+			);
 			productName = GitWorktreeCleanerTests;
 			productReference = E9879FD7306A0FC500F6B491 /* GitWorktreeCleanerTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
@@ -181,6 +194,9 @@
 			);
 			mainGroup = E9879FC1306A0FC500F6B491;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				4D902E795F63F7F80F815A39 /* XCLocalSwiftPackageReference "Packages" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = E9879FCB306A0FC500F6B491 /* Products */;
 			projectDirPath = "";
@@ -543,6 +559,24 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		4D902E795F63F7F80F815A39 /* XCLocalSwiftPackageReference "Packages" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = Packages;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		391203B42CA9AF3075C2026C /* WorktreeFeature */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = WorktreeFeature;
+		};
+		B84E2D7399F931313CAFD884 /* WorktreeFeature */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = WorktreeFeature;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = E9879FC2306A0FC500F6B491 /* Project object */;
 	validationLevel = 1;

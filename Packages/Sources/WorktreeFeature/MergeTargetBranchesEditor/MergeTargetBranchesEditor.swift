@@ -3,10 +3,13 @@
 //  GitWorktreeCleaner
 //
 
+import Localization
+import Models
 import SwiftUI
 
 /// Sheet for editing the branches a worktree's branch must be merged into
-/// (all of them) to be flagged "merged" and safe to remove.
+/// (all of them) to be flagged "merged" and safe to remove. 1:1 with
+/// `MergeTargetBranchesEditorViewModel`.
 ///
 /// A branch is verified against the repository when it's added, so a typo
 /// or nonexistent name is rejected on the spot. A branch that was valid at
@@ -14,23 +17,15 @@ import SwiftUI
 /// flagged with a "not found" tag instead, since it isn't necessarily wrong
 /// to leave configured (it may come back after a fetch).
 struct MergeTargetBranchesEditor: View {
-    let repoPath: String
-    let branches: [String]
     let onSave: ([String]) -> Void
 
     @Environment(\.dismiss) private var dismiss
-    @State private var draft: [String]
+    @StateObject private var viewModel: MergeTargetBranchesEditorViewModel
     @State private var newBranch: String = ""
-    @State private var notFoundBranches: Set<String> = []
-    @State private var addErrorMessage: String?
 
-    private let service = GitWorktreeService()
-
-    init(repoPath: String, branches: [String], onSave: @escaping ([String]) -> Void) {
-        self.repoPath = repoPath
-        self.branches = branches
+    init(repoPath: String, branchList: [String], onSave: @escaping ([String]) -> Void) {
         self.onSave = onSave
-        _draft = State(initialValue: branches)
+        _viewModel = StateObject(wrappedValue: MergeTargetBranchesEditorViewModel(repoPath: repoPath, branchList: branchList))
     }
 
     var body: some View {
@@ -46,30 +41,29 @@ struct MergeTargetBranchesEditor: View {
                     .disabled(BranchList.parse(newBranch).isEmpty)
             }
 
-            if let addErrorMessage {
+            if let addErrorMessage = viewModel.addErrorMessage {
                 Text(addErrorMessage)
                     .font(.caption)
                     .foregroundStyle(.red)
             }
 
-            if draft.isEmpty {
+            if viewModel.draft.isEmpty {
                 Text(Constant.MergeTargetEditor.emptyList)
                     .font(.caption)
                     .foregroundStyle(.secondary)
                     .frame(maxWidth: .infinity, minHeight: 80)
             } else {
                 List {
-                    ForEach(draft, id: \.self) { branch in
+                    ForEach(viewModel.draft, id: \.self) { branch in
                         HStack(spacing: 8) {
                             Text(branch)
                                 .font(.body.monospaced())
-                            if notFoundBranches.contains(branch) {
+                            if viewModel.notFoundBranches.contains(branch) {
                                 StatusTag(text: Constant.Tag.notFound, color: .red)
                             }
                             Spacer()
                             Button {
-                                draft.removeAll { $0 == branch }
-                                notFoundBranches.remove(branch)
+                                viewModel.removeBranch(branch)
                             } label: {
                                 Image(systemName: "minus.circle.fill")
                                     .foregroundStyle(.secondary)
@@ -85,7 +79,7 @@ struct MergeTargetBranchesEditor: View {
                 Spacer()
                 Button(Constant.ConfirmDelete.cancelButton) { dismiss() }
                 Button(Constant.MergeTargetEditor.saveButton) {
-                    onSave(draft)
+                    onSave(viewModel.draft)
                     dismiss()
                 }
                 .keyboardShortcut(.defaultAction)
@@ -94,28 +88,13 @@ struct MergeTargetBranchesEditor: View {
         .padding()
         .frame(minWidth: 380)
         .onAppear {
-            notFoundBranches = Set(draft.filter { !service.branchExists($0, repoPath: repoPath) })
+            viewModel.checkNotFoundBranches()
         }
     }
 
     private func addBranch() {
-        let entries = BranchList.parse(newBranch)
-        guard !entries.isEmpty else { return }
-
-        var missing: [String] = []
-        for entry in entries where !draft.contains(entry) {
-            if service.branchExists(entry, repoPath: repoPath) {
-                draft.append(entry)
-            } else {
-                missing.append(entry)
-            }
-        }
-
-        if missing.isEmpty {
-            addErrorMessage = nil
+        if viewModel.addBranch(newBranch) {
             newBranch = ""
-        } else {
-            addErrorMessage = String(localized: Constant.MergeTargetEditor.branchNotFound(branches: BranchList.format(missing)))
         }
     }
 }

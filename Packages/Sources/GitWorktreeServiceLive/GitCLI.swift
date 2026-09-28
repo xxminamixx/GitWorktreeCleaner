@@ -4,6 +4,7 @@
 //
 
 import Foundation
+import Localization
 
 struct CommandResult: Sendable {
     let exitCode: Int32

@@ -6,12 +6,13 @@
 //
 
 import SwiftUI
+import WorktreeFeature
 
 @main
 struct GitWorktreeCleanerApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            MainScreen()
         }
     }
 }

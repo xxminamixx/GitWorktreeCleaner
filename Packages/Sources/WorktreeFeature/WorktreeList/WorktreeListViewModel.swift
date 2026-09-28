@@ -4,17 +4,24 @@
 //
 
 import Combine
+import Dependencies
 import Foundation
+import GitWorktreeServiceClient
+import Localization
+import Models
 
+/// Backs `WorktreeListView`. One instance per selected repository (`repoPath`
+/// is fixed at init; `WorktreeListView` uses `.id(repoPath)` so a new instance
+/// is created whenever the selected repository changes).
 @MainActor
 final class WorktreeListViewModel: ObservableObject {
-    @Published private(set) var repoPath: String?
+    let repoPath: String
     @Published private(set) var worktrees: [Worktree] = []
     @Published var selection: Set<String> = []
     @Published private(set) var isLoading = false
     @Published var errorMessage: String?
     @Published var showRemoveConfirmation = false
-    @Published private(set) var mergeTargetBranches: [String] = []
+    @Published private(set) var mergeTargetBranches: [String]
     /// Paths of worktrees whose branch is already merged into every branch
     /// in `mergeTargetBranches`, i.e. safe to remove.
     @Published private(set) var mergedPaths: Set<String> = []
@@ -22,7 +29,12 @@ final class WorktreeListViewModel: ObservableObject {
     /// valid ref (e.g. deleted upstream after being registered).
     @Published private(set) var invalidMergeTargetBranches: [String] = []
 
-    private let service = GitWorktreeService()
+    @Dependency(\.gitWorktreeServiceClient) private var service
+
+    init(repoPath: String, mergeTargetBranches: [String] = []) {
+        self.repoPath = repoPath
+        self.mergeTargetBranches = mergeTargetBranches
+    }
 
     var selectableWorktrees: [Worktree] {
         worktrees.filter { !$0.isMain }
@@ -30,23 +42,6 @@ final class WorktreeListViewModel: ObservableObject {
 
     var canRemoveSelection: Bool {
         !selection.isEmpty && !isLoading
-    }
-
-    /// Switches to a different repository, e.g. after a sidebar selection change.
-    /// `mergeTargetBranches` is passed in alongside the path so the very
-    /// first `refresh()` already checks merges against the right branches.
-    func setRepository(_ path: String?, mergeTargetBranches: [String] = []) {
-        guard repoPath != path else { return }
-        repoPath = path
-        worktrees = []
-        selection.removeAll()
-        errorMessage = nil
-        mergedPaths = []
-        invalidMergeTargetBranches = []
-        self.mergeTargetBranches = mergeTargetBranches
-        if path != nil {
-            refresh()
-        }
     }
 
     /// Updates the branches worktree branches must be merged into, and
@@ -60,15 +55,15 @@ final class WorktreeListViewModel: ObservableObject {
     }
 
     func refresh() {
-        guard let repoPath else { return }
         isLoading = true
         errorMessage = nil
         let service = self.service
+        let repoPath = self.repoPath
 
         Task {
             do {
                 let list = try await Task.detached(priority: .userInitiated) {
-                    try service.listWorktrees(repoPath: repoPath)
+                    try service.listWorktrees(repoPath)
                 }.value
                 worktrees = list
                 selection.formIntersection(Set(list.map(\.path)))
@@ -85,7 +80,7 @@ final class WorktreeListViewModel: ObservableObject {
     }
 
     private func recomputeMerged() async {
-        guard let repoPath, !mergeTargetBranches.isEmpty else {
+        guard !mergeTargetBranches.isEmpty else {
             mergedPaths = []
             invalidMergeTargetBranches = []
             return
@@ -93,8 +88,9 @@ final class WorktreeListViewModel: ObservableObject {
         let service = self.service
         let targetBranches = mergeTargetBranches
         let list = worktrees
+        let repoPath = self.repoPath
         let result = await Task.detached(priority: .userInitiated) {
-            service.mergeCheckResult(worktrees: list, targetBranches: targetBranches, repoPath: repoPath)
+            service.mergeCheckResult(list, targetBranches, repoPath)
         }.value
         mergedPaths = result.mergedPaths
         invalidMergeTargetBranches = result.invalidTargetBranches
@@ -123,18 +119,18 @@ final class WorktreeListViewModel: ObservableObject {
     }
 
     func confirmRemoveSelected() {
-        guard let repoPath else { return }
         let targets = worktrees.filter { selection.contains($0.path) && !$0.isMain }
         guard !targets.isEmpty else { return }
 
         isLoading = true
         let service = self.service
+        let repoPath = self.repoPath
 
         Task {
             var failures: [String] = []
             for worktree in targets {
                 let result = await Task.detached(priority: .userInitiated) {
-                    service.remove(worktreePath: worktree.path, repoPath: repoPath)
+                    service.remove(worktree.path, repoPath)
                 }.value
                 if case .failure(let error) = result {
                     failures.append("\(worktree.displayName): \(error.localizedDescription)")
