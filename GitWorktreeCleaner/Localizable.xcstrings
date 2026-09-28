@@ -1,0 +1,372 @@
+{
+  "sourceLanguage" : "en",
+  "strings" : {
+    "" : {
+
+    },
+    "confirmDelete.cancelButton" : {
+      "comment" : "Cancel button in the removal confirmation dialog",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Cancel"
+          }
+        }
+      }
+    },
+    "confirmDelete.message" : {
+      "comment" : "Confirmation dialog body warning about force removal",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This permanently deletes the selected worktree folders and discards any uncommitted or untracked changes inside them. This cannot be undone."
+          }
+        }
+      }
+    },
+    "confirmDelete.removeButton" : {
+      "comment" : "Destructive confirm button for force-removing worktrees",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove Forcefully"
+          }
+        }
+      }
+    },
+    "confirmDelete.title" : {
+      "comment" : "Confirmation dialog title before force-removing selected worktrees",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove %lld worktree(s)?"
+          }
+        }
+      }
+    },
+    "detail.clearSelection" : {
+      "comment" : "Button clearing the current worktree selection",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Clear Selection"
+          }
+        }
+      }
+    },
+    "detail.loading" : {
+      "comment" : "Progress label while listing worktrees",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Loading worktrees…"
+          }
+        }
+      }
+    },
+    "detail.refresh" : {
+      "comment" : "Button reloading the worktree list",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Refresh"
+          }
+        }
+      }
+    },
+    "detail.removeSelected" : {
+      "comment" : "Destructive button removing the selected worktrees; shows the selection count",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove Selected (%lld)"
+          }
+        }
+      }
+    },
+    "detail.repositoryLabel" : {
+      "comment" : "Caption above the selected repository's path",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Repository"
+          }
+        }
+      }
+    },
+    "detail.selectAll" : {
+      "comment" : "Button selecting every removable worktree",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select All"
+          }
+        }
+      }
+    },
+    "empty.addRepositoryButton" : {
+      "comment" : "Button in the empty state that opens the add-repository panel",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add Repository…"
+          }
+        }
+      }
+    },
+    "empty.noRepositories.message" : {
+      "comment" : "Empty state message when no repository has been added yet",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add a git repository to see its worktrees."
+          }
+        }
+      }
+    },
+    "empty.noRepositories.title" : {
+      "comment" : "Empty state title when no repository has been added yet",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No Repositories"
+          }
+        }
+      }
+    },
+    "empty.noWorktrees.message" : {
+      "comment" : "Empty state message when the selected repository has no linked worktrees",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "This repository doesn't have any linked worktrees."
+          }
+        }
+      }
+    },
+    "empty.noWorktrees.title" : {
+      "comment" : "Empty state title when the selected repository has no linked worktrees",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No Worktrees Found"
+          }
+        }
+      }
+    },
+    "empty.selectRepository.message" : {
+      "comment" : "Empty state message when repositories exist but none is selected",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Choose a repository from the sidebar."
+          }
+        }
+      }
+    },
+    "empty.selectRepository.title" : {
+      "comment" : "Empty state title when repositories exist but none is selected",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select a Repository"
+          }
+        }
+      }
+    },
+    "error.gitLaunchFailed" : {
+      "comment" : "Error shown when the git process itself fails to launch",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Could not launch git: %@"
+          }
+        }
+      }
+    },
+    "error.notAGitRepository" : {
+      "comment" : "Error shown when the chosen folder has no git repository",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "The selected folder is not part of a git repository."
+          }
+        }
+      }
+    },
+    "error.okButton" : {
+      "comment" : "Dismiss button on the error alert",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "OK"
+          }
+        }
+      }
+    },
+    "error.removalFailuresHeader" : {
+      "comment" : "Header line above a list of per-worktree removal failures",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Some worktrees could not be removed:"
+          }
+        }
+      }
+    },
+    "error.removeFailedFallback" : {
+      "comment" : "Fallback error when removing a worktree fails without a specific git message",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Failed to remove %@."
+          }
+        }
+      }
+    },
+    "error.title" : {
+      "comment" : "Generic error alert title",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Error"
+          }
+        }
+      }
+    },
+    "error.worktreeListFailed" : {
+      "comment" : "Fallback error when listing worktrees fails without a specific git message",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "git worktree list failed."
+          }
+        }
+      }
+    },
+    "panel.addRepository.message" : {
+      "comment" : "Instructional message on the folder picker used to add a repository",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Select a folder inside the git repository you want to manage."
+          }
+        }
+      }
+    },
+    "panel.addRepository.prompt" : {
+      "comment" : "Confirm button label on the folder picker used to add a repository",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add"
+          }
+        }
+      }
+    },
+    "sidebar.addRepositoryHelp" : {
+      "comment" : "Tooltip for the add-repository toolbar button",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add Repository"
+          }
+        }
+      }
+    },
+    "sidebar.removeFromList" : {
+      "comment" : "Context menu action removing a repository from the sidebar (does not touch disk)",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Remove from List"
+          }
+        }
+      }
+    },
+    "sidebar.title" : {
+      "comment" : "Sidebar section header",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Repositories"
+          }
+        }
+      }
+    },
+    "tag.bare" : {
+      "comment" : "Badge marking a bare worktree",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "bare"
+          }
+        }
+      }
+    },
+    "tag.locked" : {
+      "comment" : "Badge marking a locked worktree",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "locked"
+          }
+        }
+      }
+    },
+    "tag.main" : {
+      "comment" : "Badge marking the repository's primary worktree",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "main"
+          }
+        }
+      }
+    },
+    "tag.prunable" : {
+      "comment" : "Badge marking a prunable worktree",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "prunable"
+          }
+        }
+      }
+    }
+  },
+  "version" : "1.0"
+}
