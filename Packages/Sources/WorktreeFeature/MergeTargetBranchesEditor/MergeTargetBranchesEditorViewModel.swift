@@ -17,7 +17,7 @@ import Models
 final class MergeTargetBranchesEditorViewModel: ObservableObject {
     let repoPath: String
     @Published private(set) var draft: [String]
-    @Published private(set) var notFoundBranches: Set<String> = []
+    @Published private(set) var notFoundBranchList: Set<String> = []
     @Published private(set) var addErrorMessage: String?
 
     @Dependency(\.gitWorktreeServiceClient) private var service
@@ -28,7 +28,7 @@ final class MergeTargetBranchesEditorViewModel: ObservableObject {
     }
 
     func checkNotFoundBranches() {
-        notFoundBranches = Set(draft.filter { !service.branchExists($0, repoPath) })
+        notFoundBranchList = Set(draft.filter { !service.branchExists($0, repoPath) })
     }
 
     /// Parses and adds the entries in `input` (comma-separated), verifying
@@ -59,6 +59,6 @@ final class MergeTargetBranchesEditorViewModel: ObservableObject {
 
     func removeBranch(_ branch: String) {
         draft.removeAll { $0 == branch }
-        notFoundBranches.remove(branch)
+        notFoundBranchList.remove(branch)
     }
 }

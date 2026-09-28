@@ -12,7 +12,7 @@ struct MergedWorktreePathsTests {
         let baseMerged: Set<String> = ["main", "feature/done"]
 
         let result = MergedWorktreePaths.compute(
-            worktrees: [fullyMerged, partiallyMerged, detached],
+            worktreeList: [fullyMerged, partiallyMerged, detached],
             mergedBranchSets: [developMerged, baseMerged]
         )
 
@@ -21,7 +21,7 @@ struct MergedWorktreePathsTests {
 
     @Test func mergedWorktreePathsIsEmptyWithoutTargetBranches() {
         let worktree = makeWorktree(path: "/repo/a", branch: "refs/heads/main")
-        #expect(MergedWorktreePaths.compute(worktrees: [worktree], mergedBranchSets: []).isEmpty)
+        #expect(MergedWorktreePaths.compute(worktreeList: [worktree], mergedBranchSets: []).isEmpty)
     }
 
     @Test func mergedWorktreePathsExcludesMainWorktree() {
@@ -32,7 +32,7 @@ struct MergedWorktreePathsTests {
         let developMerged: Set<String> = ["develop", "feature/done"]
 
         let result = MergedWorktreePaths.compute(
-            worktrees: [main, linked],
+            worktreeList: [main, linked],
             mergedBranchSets: [developMerged]
         )
 

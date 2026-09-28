@@ -1,5 +1,5 @@
 //
-//  MergeTargetBranchesEditor.swift
+//  MergeTargetBranchesEditorScreen.swift
 //  GitWorktreeCleaner
 //
 
@@ -16,7 +16,7 @@ import SwiftUI
 /// registration but no longer resolves (e.g. deleted upstream) is kept and
 /// flagged with a "not found" tag instead, since it isn't necessarily wrong
 /// to leave configured (it may come back after a fetch).
-struct MergeTargetBranchesEditor: View {
+struct MergeTargetBranchesEditorScreen: View {
     let onSave: ([String]) -> Void
 
     @Environment(\.dismiss) private var dismiss
@@ -58,8 +58,8 @@ struct MergeTargetBranchesEditor: View {
                         HStack(spacing: 8) {
                             Text(branch)
                                 .font(.body.monospaced())
-                            if viewModel.notFoundBranches.contains(branch) {
-                                StatusTag(text: Constant.Tag.notFound, color: .red)
+                            if viewModel.notFoundBranchList.contains(branch) {
+                                StatusTagView(text: Constant.Tag.notFound, color: .red)
                             }
                             Spacer()
                             Button {

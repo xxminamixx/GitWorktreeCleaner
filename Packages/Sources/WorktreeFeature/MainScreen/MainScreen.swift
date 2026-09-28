@@ -19,7 +19,7 @@ public struct MainScreen: View {
         NavigationSplitView {
             RepositoryListView(
                 selectedRepository: $mainViewModel.selectedRepository,
-                onRepositoriesChanged: { mainViewModel.repositoriesDidChange($0) }
+                onRepositoryListChanged: { mainViewModel.repositoryListDidChange($0) }
             )
         } detail: {
             detail
@@ -38,9 +38,9 @@ public struct MainScreen: View {
         } else if let repoPath = mainViewModel.selectedRepository {
             WorktreeListView(
                 repoPath: repoPath,
-                mergeTargetBranches: mainViewModel.mergeTargetBranches(for: repoPath)
-            ) { branches in
-                mainViewModel.setMergeTargetBranches(branches, for: repoPath)
+                mergeTargetBranchList: mainViewModel.mergeTargetBranchList(for: repoPath)
+            ) { branchList in
+                mainViewModel.setMergeTargetBranchList(branchList, for: repoPath)
             }
             .id(repoPath)
         } else {

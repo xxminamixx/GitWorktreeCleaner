@@ -15,18 +15,18 @@ import UserDefaultsClient
 /// in `MainViewModel` instead, since those are shared with `MainScreen`.
 @MainActor
 final class RepositoryListViewModel: ObservableObject {
-    @Published private(set) var repositories: [String] = []
+    @Published private(set) var repositoryList: [String] = []
 
     @Dependency(\.userDefaultsClient) private var userDefaults
 
-    private static let repositoriesKey = "GitWorktreeCleaner.repositories"
+    private static let repositoryListKey = "GitWorktreeCleaner.repositories"
 
     init() {
-        let saved = userDefaults.stringArray(Self.repositoriesKey) ?? []
+        let saved = userDefaults.stringArray(Self.repositoryListKey) ?? []
         let existing = saved.filter { FileManager.default.fileExists(atPath: $0) }
-        repositories = existing
+        repositoryList = existing
         if existing.count != saved.count {
-            userDefaults.setStringArray(Self.repositoriesKey, existing)
+            userDefaults.setStringArray(Self.repositoryListKey, existing)
         }
     }
 
@@ -43,19 +43,19 @@ final class RepositoryListViewModel: ObservableObject {
 
         guard panel.runModal() == .OK, let url = panel.url else { return nil }
         let path = url.path
-        if !repositories.contains(path) {
-            repositories.append(path)
-            persistRepositories()
+        if !repositoryList.contains(path) {
+            repositoryList.append(path)
+            persistRepositoryList()
         }
         return path
     }
 
     func removeRepository(_ path: String) {
-        repositories.removeAll { $0 == path }
-        persistRepositories()
+        repositoryList.removeAll { $0 == path }
+        persistRepositoryList()
     }
 
-    private func persistRepositories() {
-        userDefaults.setStringArray(Self.repositoriesKey, repositories)
+    private func persistRepositoryList() {
+        userDefaults.setStringArray(Self.repositoryListKey, repositoryList)
     }
 }

@@ -54,27 +54,27 @@ extension GitWorktreeServiceClient: DependencyKey {
             branchExists: { ref, repoPath in
                 (try? cli.run(["rev-parse", "--verify", "--quiet", ref], in: repoPath))?.succeeded == true
             },
-            mergeCheckResult: { worktrees, targetBranches, repoPath in
-                guard !targetBranches.isEmpty else {
-                    return MergeCheckResult(mergedPaths: [], invalidTargetBranches: [])
+            mergeCheckResult: { worktreeList, targetBranchList, repoPath in
+                guard !targetBranchList.isEmpty else {
+                    return MergeCheckResult(mergedPathList: [], invalidTargetBranchList: [])
                 }
 
                 var mergedBranchSets: [Set<String>] = []
-                var invalidTargetBranches: [String] = []
-                for target in targetBranches {
+                var invalidTargetBranchList: [String] = []
+                for target in targetBranchList {
                     if let names = try? mergedBranchNames(mergedInto: target, repoPath: repoPath) {
                         mergedBranchSets.append(names)
                     } else {
-                        invalidTargetBranches.append(target)
+                        invalidTargetBranchList.append(target)
                     }
                 }
 
-                guard invalidTargetBranches.isEmpty else {
-                    return MergeCheckResult(mergedPaths: [], invalidTargetBranches: invalidTargetBranches)
+                guard invalidTargetBranchList.isEmpty else {
+                    return MergeCheckResult(mergedPathList: [], invalidTargetBranchList: invalidTargetBranchList)
                 }
                 return MergeCheckResult(
-                    mergedPaths: MergedWorktreePaths.compute(worktrees: worktrees, mergedBranchSets: mergedBranchSets),
-                    invalidTargetBranches: []
+                    mergedPathList: MergedWorktreePaths.compute(worktreeList: worktreeList, mergedBranchSets: mergedBranchSets),
+                    invalidTargetBranchList: []
                 )
             }
         )

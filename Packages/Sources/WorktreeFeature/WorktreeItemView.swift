@@ -1,5 +1,5 @@
 //
-//  WorktreeRow.swift
+//  WorktreeItemView.swift
 //  GitWorktreeCleaner
 //
 
@@ -8,7 +8,7 @@ import Localization
 import Models
 import SwiftUI
 
-struct WorktreeRow: View {
+struct WorktreeItemView: View {
     let worktree: Worktree
     let isSelected: Bool
     let isMerged: Bool
@@ -28,19 +28,19 @@ struct WorktreeRow: View {
                         Text(worktree.displayName)
                             .font(.headline)
                         if worktree.isMain {
-                            StatusTag(text: Constant.Tag.main, color: .blue)
+                            StatusTagView(text: Constant.Tag.main, color: .blue)
                         }
                         if worktree.isBare {
-                            StatusTag(text: Constant.Tag.bare, color: .gray)
+                            StatusTagView(text: Constant.Tag.bare, color: .gray)
                         }
                         if worktree.isLocked {
-                            StatusTag(text: Constant.Tag.locked, color: .orange)
+                            StatusTagView(text: Constant.Tag.locked, color: .orange)
                         }
                         if worktree.isPrunable {
-                            StatusTag(text: Constant.Tag.prunable, color: .red)
+                            StatusTagView(text: Constant.Tag.prunable, color: .red)
                         }
                         if isMerged {
-                            StatusTag(text: Constant.Tag.merged, color: .purple)
+                            StatusTagView(text: Constant.Tag.merged, color: .purple)
                         }
                     }
                     Text(worktree.path)

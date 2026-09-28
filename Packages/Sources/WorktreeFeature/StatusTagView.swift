@@ -1,5 +1,5 @@
 //
-//  StatusTag.swift
+//  StatusTagView.swift
 //  GitWorktreeCleaner
 //
 
@@ -7,7 +7,7 @@ import SwiftUI
 
 /// Small pill-shaped badge used to mark worktree/branch status (main, locked,
 /// merged, not found, ...) across list rows and the merge target editor.
-struct StatusTag: View {
+struct StatusTagView: View {
     let text: LocalizedStringResource
     let color: Color
 

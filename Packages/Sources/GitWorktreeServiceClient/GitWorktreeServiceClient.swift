@@ -24,12 +24,12 @@ public enum GitWorktreeError: LocalizedError {
 }
 
 public struct MergeCheckResult: Sendable {
-    public let mergedPaths: Set<String>
-    public let invalidTargetBranches: [String]
+    public let mergedPathList: Set<String>
+    public let invalidTargetBranchList: [String]
 
-    public init(mergedPaths: Set<String>, invalidTargetBranches: [String]) {
-        self.mergedPaths = mergedPaths
-        self.invalidTargetBranches = invalidTargetBranches
+    public init(mergedPathList: Set<String>, invalidTargetBranchList: [String]) {
+        self.mergedPathList = mergedPathList
+        self.invalidTargetBranchList = invalidTargetBranchList
     }
 }
 
@@ -38,13 +38,13 @@ public struct GitWorktreeServiceClient: Sendable {
     public var listWorktrees: @Sendable (_ repoPath: String) throws -> [Worktree]
     public var remove: @Sendable (_ worktreePath: String, _ repoPath: String) -> Result<Void, GitWorktreeError> = { _, _ in .success(()) }
     public var branchExists: @Sendable (_ ref: String, _ repoPath: String) -> Bool = { _, _ in false }
-    /// Checks which worktrees are merged into every branch in `targetBranches`.
+    /// Checks which worktrees are merged into every branch in `targetBranchList`.
     /// A target branch that no longer resolves (e.g. deleted upstream after
-    /// being registered) is reported via `invalidTargetBranches` instead of
+    /// being registered) is reported via `invalidTargetBranchList` instead of
     /// throwing; while any target is invalid nothing can be confirmed "merged
-    /// into all", so `mergedPaths` comes back empty.
-    public var mergeCheckResult: @Sendable (_ worktrees: [Worktree], _ targetBranches: [String], _ repoPath: String) -> MergeCheckResult = { _, _, _ in
-        MergeCheckResult(mergedPaths: [], invalidTargetBranches: [])
+    /// into all", so `mergedPathList` comes back empty.
+    public var mergeCheckResult: @Sendable (_ worktreeList: [Worktree], _ targetBranchList: [String], _ repoPath: String) -> MergeCheckResult = { _, _, _ in
+        MergeCheckResult(mergedPathList: [], invalidTargetBranchList: [])
     }
 }
 

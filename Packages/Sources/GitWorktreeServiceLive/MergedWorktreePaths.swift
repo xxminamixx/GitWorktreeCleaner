@@ -11,10 +11,10 @@ import Models
 /// always excluded: it can't be removed regardless of merge status, so
 /// flagging it "merged" would be misleading.
 enum MergedWorktreePaths {
-    static func compute(worktrees: [Worktree], mergedBranchSets: [Set<String>]) -> Set<String> {
+    static func compute(worktreeList: [Worktree], mergedBranchSets: [Set<String>]) -> Set<String> {
         guard !mergedBranchSets.isEmpty else { return [] }
         var result: Set<String> = []
-        for worktree in worktrees where !worktree.isMain {
+        for worktree in worktreeList where !worktree.isMain {
             guard let branchName = worktree.shortBranchName else { continue }
             if mergedBranchSets.allSatisfy({ $0.contains(branchName) }) {
                 result.insert(worktree.path)

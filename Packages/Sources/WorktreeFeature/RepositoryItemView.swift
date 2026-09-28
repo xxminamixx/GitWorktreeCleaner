@@ -1,11 +1,11 @@
 //
-//  RepositoryRow.swift
+//  RepositoryItemView.swift
 //  GitWorktreeCleaner
 //
 
 import SwiftUI
 
-struct RepositoryRow: View {
+struct RepositoryItemView: View {
     let path: String
 
     private var displayName: String {

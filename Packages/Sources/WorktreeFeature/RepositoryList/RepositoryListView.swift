@@ -8,11 +8,11 @@ import SwiftUI
 
 /// Sidebar: the list of registered repositories. 1:1 with `RepositoryListViewModel`.
 /// Selection is owned by the parent (`MainViewModel`) and passed in as a binding;
-/// list changes are reported upward via `onRepositoriesChanged` so the parent can
+/// list changes are reported upward via `onRepositoryListChanged` so the parent can
 /// keep selection and per-repo merge-target branches consistent with it.
 struct RepositoryListView: View {
     @Binding var selectedRepository: String?
-    let onRepositoriesChanged: ([String]) -> Void
+    let onRepositoryListChanged: ([String]) -> Void
 
     @StateObject private var viewModel = RepositoryListViewModel()
 
@@ -38,8 +38,8 @@ struct RepositoryListView: View {
             Divider()
 
             List(selection: $selectedRepository) {
-                ForEach(viewModel.repositories, id: \.self) { path in
-                    RepositoryRow(path: path)
+                ForEach(viewModel.repositoryList, id: \.self) { path in
+                    RepositoryItemView(path: path)
                         .tag(path)
                         .contextMenu {
                             Button(Constant.Sidebar.removeFromList, role: .destructive) {
@@ -51,10 +51,10 @@ struct RepositoryListView: View {
             .listStyle(.sidebar)
         }
         .onAppear {
-            onRepositoriesChanged(viewModel.repositories)
+            onRepositoryListChanged(viewModel.repositoryList)
         }
-        .onChange(of: viewModel.repositories) { _, newValue in
-            onRepositoriesChanged(newValue)
+        .onChange(of: viewModel.repositoryList) { _, newValue in
+            onRepositoryListChanged(newValue)
         }
     }
 }

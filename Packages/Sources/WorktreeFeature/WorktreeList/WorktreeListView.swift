@@ -12,15 +12,15 @@ import SwiftUI
 /// new `WorktreeListViewModel` is created whenever the selected repository changes.
 struct WorktreeListView: View {
     let repoPath: String
-    let onUpdateMergeTargetBranches: ([String]) -> Void
+    let onUpdateMergeTargetBranchList: ([String]) -> Void
 
     @StateObject private var viewModel: WorktreeListViewModel
     @State private var isEditingMergeTargets = false
 
-    init(repoPath: String, mergeTargetBranches: [String], onUpdateMergeTargetBranches: @escaping ([String]) -> Void) {
+    init(repoPath: String, mergeTargetBranchList: [String], onUpdateMergeTargetBranchList: @escaping ([String]) -> Void) {
         self.repoPath = repoPath
-        self.onUpdateMergeTargetBranches = onUpdateMergeTargetBranches
-        _viewModel = StateObject(wrappedValue: WorktreeListViewModel(repoPath: repoPath, mergeTargetBranches: mergeTargetBranches))
+        self.onUpdateMergeTargetBranchList = onUpdateMergeTargetBranchList
+        _viewModel = StateObject(wrappedValue: WorktreeListViewModel(repoPath: repoPath, mergeTargetBranchList: mergeTargetBranchList))
     }
 
     var body: some View {
@@ -33,12 +33,12 @@ struct WorktreeListView: View {
             viewModel.refresh()
         }
         .sheet(isPresented: $isEditingMergeTargets) {
-            MergeTargetBranchesEditor(
+            MergeTargetBranchesEditorScreen(
                 repoPath: repoPath,
-                branchList: viewModel.mergeTargetBranches
+                branchList: viewModel.mergeTargetBranchList
             ) { branchList in
-                viewModel.updateMergeTargetBranches(branchList)
-                onUpdateMergeTargetBranches(branchList)
+                viewModel.updateMergeTargetBranchList(branchList)
+                onUpdateMergeTargetBranchList(branchList)
             }
         }
         .confirmationDialog(
@@ -88,7 +88,7 @@ struct WorktreeListView: View {
 
             HStack {
                 Button(Constant.Detail.selectAll) { viewModel.selectAll() }
-                    .disabled(viewModel.selectableWorktrees.isEmpty)
+                    .disabled(viewModel.selectableWorktreeList.isEmpty)
                 Button(Constant.Detail.clearSelection) { viewModel.clearSelection() }
                     .disabled(viewModel.selection.isEmpty)
                 Spacer()
@@ -111,21 +111,21 @@ struct WorktreeListView: View {
 
     @ViewBuilder
     private var worktreeContent: some View {
-        if viewModel.isLoading && viewModel.worktrees.isEmpty {
+        if viewModel.isLoading && viewModel.worktreeList.isEmpty {
             ProgressView(Constant.Detail.loading)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-        } else if viewModel.worktrees.isEmpty {
+        } else if viewModel.worktreeList.isEmpty {
             EmptyStateView(
                 systemImage: "tray",
                 title: Constant.EmptyState.noWorktreesTitle,
                 message: Constant.EmptyState.noWorktreesMessage
             )
         } else {
-            List(viewModel.worktrees) { worktree in
-                WorktreeRow(
+            List(viewModel.worktreeList) { worktree in
+                WorktreeItemView(
                     worktree: worktree,
                     isSelected: viewModel.selection.contains(worktree.path),
-                    isMerged: viewModel.mergedPaths.contains(worktree.path)
+                    isMerged: viewModel.mergedPathList.contains(worktree.path)
                 ) { isOn in
                     viewModel.toggleSelection(for: worktree, isSelected: isOn)
                 }
@@ -137,8 +137,8 @@ struct WorktreeListView: View {
     }
 
     private var mergeTargetSummaryText: LocalizedStringResource {
-        let branches = viewModel.mergeTargetBranches
-        guard !branches.isEmpty else { return Constant.Detail.mergeTargetSummaryEmpty }
-        return Constant.Detail.mergeTargetSummary(branches: BranchList.format(branches))
+        let branchList = viewModel.mergeTargetBranchList
+        guard !branchList.isEmpty else { return Constant.Detail.mergeTargetSummaryEmpty }
+        return Constant.Detail.mergeTargetSummary(branches: BranchList.format(branchList))
     }
 }
