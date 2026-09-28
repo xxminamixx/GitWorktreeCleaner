@@ -9,6 +9,7 @@ import SwiftUI
 struct ContentView: View {
     @StateObject private var repositoryStore = RepositoryStore()
     @StateObject private var viewModel = WorktreeListViewModel()
+    @State private var isEditingMergeTargets = false
 
     var body: some View {
         NavigationSplitView {
@@ -18,11 +19,25 @@ struct ContentView: View {
         }
         .frame(minWidth: 820, minHeight: 460)
         .onAppear {
-            viewModel.setRepository(repositoryStore.selectedRepository)
+            viewModel.setRepository(
+                repositoryStore.selectedRepository,
+                mergeTargetBranches: mergeTargetBranches(for: repositoryStore.selectedRepository)
+            )
         }
         .onChange(of: repositoryStore.selectedRepository) { _, newValue in
             repositoryStore.persistSelection()
-            viewModel.setRepository(newValue)
+            viewModel.setRepository(newValue, mergeTargetBranches: mergeTargetBranches(for: newValue))
+        }
+        .sheet(isPresented: $isEditingMergeTargets) {
+            if let repoPath = repositoryStore.selectedRepository {
+                MergeTargetBranchesEditor(
+                    repoPath: repoPath,
+                    branches: mergeTargetBranches(for: repoPath)
+                ) { branches in
+                    repositoryStore.setMergeTargetBranches(branches, for: repoPath)
+                    viewModel.updateMergeTargetBranches(branches)
+                }
+            }
         }
         .confirmationDialog(
             Constant.ConfirmDelete.title(count: viewModel.selection.count),
@@ -120,6 +135,15 @@ struct ContentView: View {
                     .truncationMode(.middle)
             }
 
+            HStack(spacing: 8) {
+                Text(mergeTargetSummaryText(for: repositoryStore.selectedRepository))
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+                Button(Constant.Detail.mergeTargetEdit) { isEditingMergeTargets = true }
+                    .buttonStyle(.automatic)
+                    .disabled(viewModel.repoPath == nil)
+            }
+
             HStack {
                 Button(Constant.Detail.selectAll) { viewModel.selectAll() }
                     .disabled(viewModel.selectableWorktrees.isEmpty)
@@ -159,7 +183,8 @@ struct ContentView: View {
             List(viewModel.worktrees) { worktree in
                 WorktreeRow(
                     worktree: worktree,
-                    isSelected: viewModel.selection.contains(worktree.path)
+                    isSelected: viewModel.selection.contains(worktree.path),
+                    isMerged: viewModel.mergedPaths.contains(worktree.path)
                 ) { isOn in
                     viewModel.toggleSelection(for: worktree, isSelected: isOn)
                 }
@@ -168,6 +193,17 @@ struct ContentView: View {
             .opacity(viewModel.isLoading ? 0.5 : 1.0)
             .disabled(viewModel.isLoading)
         }
+    }
+
+    private func mergeTargetBranches(for repoPath: String?) -> [String] {
+        guard let repoPath else { return [] }
+        return repositoryStore.mergeTargetBranches(for: repoPath)
+    }
+
+    private func mergeTargetSummaryText(for repoPath: String?) -> LocalizedStringResource {
+        let branches = mergeTargetBranches(for: repoPath)
+        guard !branches.isEmpty else { return Constant.Detail.mergeTargetSummaryEmpty }
+        return Constant.Detail.mergeTargetSummary(branches: BranchList.format(branches))
     }
 
     private func emptyState(systemImage: String, title: LocalizedStringResource, message: LocalizedStringResource, showAddButton: Bool) -> some View {

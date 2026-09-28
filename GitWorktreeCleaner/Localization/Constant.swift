@@ -45,6 +45,36 @@ enum Constant {
         static var loading: LocalizedStringResource {
             LocalizedStringResource("detail.loading", defaultValue: "Loading worktrees…", comment: "Progress label while listing worktrees")
         }
+        static func mergeTargetSummary(branches: String) -> LocalizedStringResource {
+            LocalizedStringResource("detail.mergeTargetSummary", defaultValue: "Checking merges into: \(branches)", comment: "Summary text showing which branches are configured for the merge-detection feature")
+        }
+        static var mergeTargetSummaryEmpty: LocalizedStringResource {
+            LocalizedStringResource("detail.mergeTargetSummaryEmpty", defaultValue: "Merge detection not configured", comment: "Summary text shown when no merge target branches are configured yet")
+        }
+        static var mergeTargetEdit: LocalizedStringResource {
+            LocalizedStringResource("detail.mergeTargetEdit", defaultValue: "Edit…", comment: "Button opening the merge target branches editor sheet")
+        }
+    }
+
+    enum MergeTargetEditor {
+        static var title: LocalizedStringResource {
+            LocalizedStringResource("mergeTargetEditor.title", defaultValue: "Merge Target Branches", comment: "Title of the sheet for editing merge target branches")
+        }
+        static var newBranchPlaceholder: LocalizedStringResource {
+            LocalizedStringResource("mergeTargetEditor.newBranchPlaceholder", defaultValue: "Branch name", comment: "Placeholder in the text field for adding a new merge target branch")
+        }
+        static var addButton: LocalizedStringResource {
+            LocalizedStringResource("mergeTargetEditor.addButton", defaultValue: "Add", comment: "Button adding the entered branch name to the merge target list")
+        }
+        static var emptyList: LocalizedStringResource {
+            LocalizedStringResource("mergeTargetEditor.emptyList", defaultValue: "No branches added yet.", comment: "Message shown when the merge target branch list is empty")
+        }
+        static var saveButton: LocalizedStringResource {
+            LocalizedStringResource("mergeTargetEditor.saveButton", defaultValue: "Save", comment: "Button saving the edited merge target branches and closing the sheet")
+        }
+        static func branchNotFound(branches: String) -> LocalizedStringResource {
+            LocalizedStringResource("mergeTargetEditor.branchNotFound", defaultValue: "Branch not found, not added: \(branches)", comment: "Inline error shown when a newly entered branch name doesn't exist in the repository")
+        }
     }
 
     enum EmptyState {
@@ -131,6 +161,12 @@ enum Constant {
         }
         static var prunable: LocalizedStringResource {
             LocalizedStringResource("tag.prunable", defaultValue: "prunable", comment: "Badge marking a prunable worktree")
+        }
+        static var merged: LocalizedStringResource {
+            LocalizedStringResource("tag.merged", defaultValue: "merged", comment: "Badge marking a worktree whose branch is merged into all configured target branches and is safe to remove")
+        }
+        static var notFound: LocalizedStringResource {
+            LocalizedStringResource("tag.notFound", defaultValue: "not found", comment: "Badge marking a registered merge target branch that no longer resolves in the repository")
         }
     }
 }

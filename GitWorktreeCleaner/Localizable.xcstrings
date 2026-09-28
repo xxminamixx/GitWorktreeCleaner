@@ -70,6 +70,39 @@
         }
       }
     },
+    "detail.mergeTargetEdit" : {
+      "comment" : "Button opening the merge target branches editor sheet",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Edit"
+          }
+        }
+      }
+    },
+    "detail.mergeTargetSummary" : {
+      "comment" : "Summary text showing which branches are configured for the merge-detection feature",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Checking merges into: %@"
+          }
+        }
+      }
+    },
+    "detail.mergeTargetSummaryEmpty" : {
+      "comment" : "Summary text shown when no merge target branches are configured yet",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Merge detection not configured"
+          }
+        }
+      }
+    },
     "detail.refresh" : {
       "comment" : "Button reloading the worktree list",
       "localizations" : {
@@ -268,6 +301,72 @@
         }
       }
     },
+    "mergeTargetEditor.branchNotFound" : {
+      "comment" : "Inline error shown when a newly entered branch name doesn't exist in the repository",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Branch not found, not added: %@"
+          }
+        }
+      }
+    },
+    "mergeTargetEditor.addButton" : {
+      "comment" : "Button adding the entered branch name to the merge target list",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Add"
+          }
+        }
+      }
+    },
+    "mergeTargetEditor.emptyList" : {
+      "comment" : "Message shown when the merge target branch list is empty",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "No branches added yet."
+          }
+        }
+      }
+    },
+    "mergeTargetEditor.newBranchPlaceholder" : {
+      "comment" : "Placeholder in the text field for adding a new merge target branch",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Branch name"
+          }
+        }
+      }
+    },
+    "mergeTargetEditor.saveButton" : {
+      "comment" : "Button saving the edited merge target branches and closing the sheet",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Save"
+          }
+        }
+      }
+    },
+    "mergeTargetEditor.title" : {
+      "comment" : "Title of the sheet for editing merge target branches",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Merge Target Branches"
+          }
+        }
+      }
+    },
     "panel.addRepository.message" : {
       "comment" : "Instructional message on the folder picker used to add a repository",
       "localizations" : {
@@ -352,6 +451,28 @@
           "stringUnit" : {
             "state" : "translated",
             "value" : "main"
+          }
+        }
+      }
+    },
+    "tag.merged" : {
+      "comment" : "Badge marking a worktree whose branch is merged into all configured target branches and is safe to remove",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "merged"
+          }
+        }
+      }
+    },
+    "tag.notFound" : {
+      "comment" : "Badge marking a registered merge target branch that no longer resolves in the repository",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "not found"
           }
         }
       }

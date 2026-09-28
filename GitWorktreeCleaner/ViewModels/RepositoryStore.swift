@@ -13,9 +13,13 @@ import Foundation
 final class RepositoryStore: ObservableObject {
     @Published private(set) var repositories: [String] = []
     @Published var selectedRepository: String?
+    /// Branches a worktree's branch must be merged into (for every entry)
+    /// to be flagged as safe to remove, keyed by repository path.
+    @Published private(set) var mergeTargetBranchesByRepo: [String: [String]] = [:]
 
     static let repositoriesKey = "GitWorktreeCleaner.repositories"
     static let selectedRepositoryKey = "GitWorktreeCleaner.selectedRepository"
+    static let mergeTargetBranchesKey = "GitWorktreeCleaner.mergeTargetBranches"
 
     init() {
         let saved = UserDefaults.standard.stringArray(forKey: Self.repositoriesKey) ?? []
@@ -30,6 +34,11 @@ final class RepositoryStore: ObservableObject {
             selectedRepository = savedSelection
         } else {
             selectedRepository = existing.first
+        }
+
+        if let data = UserDefaults.standard.data(forKey: Self.mergeTargetBranchesKey),
+           let decoded = try? JSONDecoder().decode([String: [String]].self, from: data) {
+            mergeTargetBranchesByRepo = decoded.filter { existing.contains($0.key) }
         }
     }
 
@@ -53,6 +62,8 @@ final class RepositoryStore: ObservableObject {
     func removeRepository(_ path: String) {
         repositories.removeAll { $0 == path }
         persistRepositories()
+        mergeTargetBranchesByRepo.removeValue(forKey: path)
+        persistMergeTargetBranches()
         if selectedRepository == path {
             selectedRepository = repositories.first
         }
@@ -64,7 +75,26 @@ final class RepositoryStore: ObservableObject {
         UserDefaults.standard.set(selectedRepository, forKey: Self.selectedRepositoryKey)
     }
 
+    func mergeTargetBranches(for repoPath: String) -> [String] {
+        mergeTargetBranchesByRepo[repoPath] ?? []
+    }
+
+    func setMergeTargetBranches(_ branches: [String], for repoPath: String) {
+        if branches.isEmpty {
+            mergeTargetBranchesByRepo.removeValue(forKey: repoPath)
+        } else {
+            mergeTargetBranchesByRepo[repoPath] = branches
+        }
+        persistMergeTargetBranches()
+    }
+
     private func persistRepositories() {
         UserDefaults.standard.set(repositories, forKey: Self.repositoriesKey)
+    }
+
+    private func persistMergeTargetBranches() {
+        if let data = try? JSONEncoder().encode(mergeTargetBranchesByRepo) {
+            UserDefaults.standard.set(data, forKey: Self.mergeTargetBranchesKey)
+        }
     }
 }

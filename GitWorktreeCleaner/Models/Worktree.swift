@@ -36,4 +36,11 @@ struct Worktree: Identifiable, Hashable, Sendable {
         if isDetached { return "detached" }
         return "-"
     }
+
+    /// The local branch name (without the `refs/heads/` prefix), or `nil`
+    /// for bare/detached worktrees that have no branch to check merges for.
+    var shortBranchName: String? {
+        guard let branch, !isBare else { return nil }
+        return branch.replacingOccurrences(of: "refs/heads/", with: "")
+    }
 }

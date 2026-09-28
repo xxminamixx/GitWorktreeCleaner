@@ -9,6 +9,7 @@ import SwiftUI
 struct WorktreeRow: View {
     let worktree: Worktree
     let isSelected: Bool
+    let isMerged: Bool
     let onToggle: (Bool) -> Void
 
     var body: some View {
@@ -36,6 +37,9 @@ struct WorktreeRow: View {
                         if worktree.isPrunable {
                             StatusTag(text: Constant.Tag.prunable, color: .red)
                         }
+                        if isMerged {
+                            StatusTag(text: Constant.Tag.merged, color: .purple)
+                        }
                     }
                     Text(worktree.path)
                         .font(.caption.monospaced())
@@ -60,20 +64,5 @@ struct WorktreeRow: View {
         .buttonStyle(.plain)
         .disabled(worktree.isMain)
         .opacity(worktree.isMain ? 0.6 : 1.0)
-    }
-}
-
-private struct StatusTag: View {
-    let text: LocalizedStringResource
-    let color: Color
-
-    var body: some View {
-        Text(text)
-            .font(.caption2.bold())
-            .padding(.horizontal, 6)
-            .padding(.vertical, 2)
-            .background(color.opacity(0.15))
-            .foregroundStyle(color)
-            .clipShape(Capsule())
     }
 }

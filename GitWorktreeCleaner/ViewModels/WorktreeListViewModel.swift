@@ -14,6 +14,13 @@ final class WorktreeListViewModel: ObservableObject {
     @Published private(set) var isLoading = false
     @Published var errorMessage: String?
     @Published var showRemoveConfirmation = false
+    @Published private(set) var mergeTargetBranches: [String] = []
+    /// Paths of worktrees whose branch is already merged into every branch
+    /// in `mergeTargetBranches`, i.e. safe to remove.
+    @Published private(set) var mergedPaths: Set<String> = []
+    /// Target branches in `mergeTargetBranches` that no longer resolve to a
+    /// valid ref (e.g. deleted upstream after being registered).
+    @Published private(set) var invalidMergeTargetBranches: [String] = []
 
     private let service = GitWorktreeService()
 
@@ -26,14 +33,29 @@ final class WorktreeListViewModel: ObservableObject {
     }
 
     /// Switches to a different repository, e.g. after a sidebar selection change.
-    func setRepository(_ path: String?) {
+    /// `mergeTargetBranches` is passed in alongside the path so the very
+    /// first `refresh()` already checks merges against the right branches.
+    func setRepository(_ path: String?, mergeTargetBranches: [String] = []) {
         guard repoPath != path else { return }
         repoPath = path
         worktrees = []
         selection.removeAll()
         errorMessage = nil
+        mergedPaths = []
+        invalidMergeTargetBranches = []
+        self.mergeTargetBranches = mergeTargetBranches
         if path != nil {
             refresh()
+        }
+    }
+
+    /// Updates the branches worktree branches must be merged into, and
+    /// recomputes which currently-listed worktrees qualify.
+    func updateMergeTargetBranches(_ branches: [String]) {
+        guard mergeTargetBranches != branches else { return }
+        mergeTargetBranches = branches
+        Task {
+            await recomputeMerged()
         }
     }
 
@@ -50,13 +72,32 @@ final class WorktreeListViewModel: ObservableObject {
                 }.value
                 worktrees = list
                 selection.formIntersection(Set(list.map(\.path)))
+                await recomputeMerged()
             } catch {
                 errorMessage = error.localizedDescription
                 worktrees = []
                 selection.removeAll()
+                mergedPaths = []
+                invalidMergeTargetBranches = []
             }
             isLoading = false
         }
+    }
+
+    private func recomputeMerged() async {
+        guard let repoPath, !mergeTargetBranches.isEmpty else {
+            mergedPaths = []
+            invalidMergeTargetBranches = []
+            return
+        }
+        let service = self.service
+        let targetBranches = mergeTargetBranches
+        let list = worktrees
+        let result = await Task.detached(priority: .userInitiated) {
+            service.mergeCheckResult(worktrees: list, targetBranches: targetBranches, repoPath: repoPath)
+        }.value
+        mergedPaths = result.mergedPaths
+        invalidMergeTargetBranches = result.invalidTargetBranches
     }
 
     func toggleSelection(for worktree: Worktree, isSelected: Bool) {
