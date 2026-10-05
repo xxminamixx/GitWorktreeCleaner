@@ -6,6 +6,8 @@ CONFIGURATION := Release
 BUILD_DIR := build
 APP_PATH := $(BUILD_DIR)/Build/Products/$(CONFIGURATION)/$(APP_NAME).app
 ZIP_PATH := $(BUILD_DIR)/$(APP_NAME).zip
+# xcodebuildへ追加で渡す引数(CIで署名設定を上書きするときに使う)
+XCODEBUILD_FLAGS :=
 
 .PHONY: open zip clean
 
@@ -17,7 +19,7 @@ open:
 # so the bundle structure survives intact).
 zip:
 	xcodebuild -project $(PROJECT) -scheme $(SCHEME) -configuration $(CONFIGURATION) \
-		-skipMacroValidation -derivedDataPath $(BUILD_DIR) build
+		-skipMacroValidation -derivedDataPath $(BUILD_DIR) $(XCODEBUILD_FLAGS) build
 	rm -f $(ZIP_PATH)
 	ditto -c -k --keepParent "$(APP_PATH)" "$(ZIP_PATH)"
 	@echo "Created $(ZIP_PATH)"
