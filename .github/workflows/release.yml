@@ -13,7 +13,8 @@ concurrency:
 
 jobs:
   release:
-    runs-on: macos-latest
+    # プロジェクトがXcode 27形式(objectVersion 110)のため、Xcode 27入りのイメージを使う
+    runs-on: xcode-27
     steps:
       - uses: actions/checkout@v4
 
