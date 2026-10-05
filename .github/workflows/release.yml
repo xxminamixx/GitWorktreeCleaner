@@ -1,0 +1,52 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Compute next tag
+        id: tag
+        run: |
+          # 履歴を取得せず、リモートのタグ一覧だけを参照する
+          latest=$(git ls-remote --tags --refs --sort=-v:refname origin 'v*' | head -n 1 | sed 's|.*refs/tags/||')
+          if [ -z "$latest" ]; then
+            next="v0.1.0"
+          else
+            IFS=. read -r major minor patch <<< "${latest#v}"
+            next="v${major}.${minor}.$((patch + 1))"
+          fi
+          echo "name=$next" >> "$GITHUB_OUTPUT"
+          echo "Next tag: $next (latest: ${latest:-none})"
+
+      - name: Create and push tag
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git tag "${{ steps.tag.outputs.name }}"
+          git push origin "${{ steps.tag.outputs.name }}"
+
+      - name: Build zip
+        run: make zip
+
+      - name: Create release and upload asset
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${{ steps.tag.outputs.name }}" \
+            build/GitWorktreeCleaner.zip \
+            --title "${{ steps.tag.outputs.name }}" \
+            --generate-notes \
+            --verify-tag
