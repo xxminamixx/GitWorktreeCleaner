@@ -27,6 +27,15 @@ extension GitWorktreeServiceClient: DependencyKey {
             return Set(names)
         }
 
+        /// Resolves `ref` to its current commit SHA, or `nil` if it doesn't resolve.
+        @Sendable
+        func headSHA(of ref: String, repoPath: String) -> String? {
+            guard let result = try? cli.run(["rev-parse", "--verify", "--quiet", ref], in: repoPath), result.succeeded else {
+                return nil
+            }
+            return result.stdout.trimmingCharacters(in: .whitespacesAndNewlines)
+        }
+
         return Self(
             listWorktrees: { repoPath in
                 let result = try cli.run(["worktree", "list", "--porcelain"], in: repoPath)
@@ -60,10 +69,14 @@ extension GitWorktreeServiceClient: DependencyKey {
                 }
 
                 var mergedBranchSets: [Set<String>] = []
+                var targetHeadSHASet: Set<String> = []
                 var invalidTargetBranchList: [String] = []
                 for target in targetBranchList {
                     if let names = try? mergedBranchNames(mergedInto: target, repoPath: repoPath) {
                         mergedBranchSets.append(names)
+                        if let sha = headSHA(of: target, repoPath: repoPath) {
+                            targetHeadSHASet.insert(sha)
+                        }
                     } else {
                         invalidTargetBranchList.append(target)
                     }
@@ -73,7 +86,7 @@ extension GitWorktreeServiceClient: DependencyKey {
                     return MergeCheckResult(mergedPathList: [], invalidTargetBranchList: invalidTargetBranchList)
                 }
                 return MergeCheckResult(
-                    mergedPathList: MergedWorktreePaths.compute(worktreeList: worktreeList, mergedBranchSets: mergedBranchSets),
+                    mergedPathList: MergedWorktreePaths.compute(worktreeList: worktreeList, mergedBranchSets: mergedBranchSets, targetHeadSHASet: targetHeadSHASet),
                     invalidTargetBranchList: []
                 )
             }
