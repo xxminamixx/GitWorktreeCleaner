@@ -149,6 +149,12 @@ public enum Constant {
         }
     }
 
+    public enum WorktreeMenu {
+        public static var copyName: LocalizedStringResource {
+            LocalizedStringResource("worktree.copyName", defaultValue: "Copy Worktree Name", comment: "Context menu action copying the worktree's directory name to the clipboard")
+        }
+    }
+
     public enum Tag {
         public static var main: LocalizedStringResource {
             LocalizedStringResource("tag.main", defaultValue: "main", comment: "Badge marking the repository's primary worktree")

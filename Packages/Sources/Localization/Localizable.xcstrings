@@ -487,6 +487,17 @@
           }
         }
       }
+    },
+    "worktree.copyName" : {
+      "comment" : "Context menu action copying the worktree's directory name to the clipboard",
+      "localizations" : {
+        "en" : {
+          "stringUnit" : {
+            "state" : "translated",
+            "value" : "Copy Worktree Name"
+          }
+        }
+      }
     }
   },
   "version" : "1.0"

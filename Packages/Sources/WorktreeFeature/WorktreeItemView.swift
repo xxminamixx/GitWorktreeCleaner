@@ -5,6 +5,7 @@
 
 import Foundation
 import Localization
+import AppKit
 import Models
 import SwiftUI
 
@@ -66,5 +67,11 @@ struct WorktreeItemView: View {
         .buttonStyle(.plain)
         .disabled(worktree.isMain)
         .opacity(worktree.isMain ? 0.6 : 1.0)
+        .contextMenu {
+            Button(Constant.WorktreeMenu.copyName) {
+                NSPasteboard.general.clearContents()
+                NSPasteboard.general.setString(worktree.displayName, forType: .string)
+            }
+        }
     }
 }
